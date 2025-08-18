@@ -30,7 +30,11 @@ sudo ./setup-ssl.sh
 ├── deploy.sh                       # Скрипт автоматического развертывания
 ├── setup-ssl.sh                    # Настройка SSL сертификатов
 ├── docker-compose.production.yml   # Docker Compose для production
-├── Dockerfile.production           # Docker образ для backend
+├── Dockerfile.production           # Docker образ для backendKSDLAKM
+
+
+
+
 ├── nginx.production.conf           # Конфигурация Nginx
 ├── env.production                  # Шаблон переменных окружения
 └── deployment-guide.html           # Интерактивная инструкция

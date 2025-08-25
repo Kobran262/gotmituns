@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Решение проблем - Srecha Invoice System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            color: #ff6b6b;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .error-box {
+            background: #e74c3c;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+        }
+        
+        .error-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .solution-tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 0;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: #ecf0f1;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: #7f8c8d;
+        }
+        
+        .tab-button.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .tab-button:hover {
+            background: #2980b9;
+            color: white;
+        }
+        
+        .solution-content {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .tab-panel {
+            display: none;
+        }
+        
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .step h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .step h3::before {
+            content: attr(data-step);
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 0.8em;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-block::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #34495e;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            color: #bdc3c7;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #c0392b;
+        }
+        
+        .warning {
+            background: #f39c12;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .warning::before {
+            content: "⚠️ ";
+            font-weight: bold;
+        }
+        
+        .info {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .info::before {
+            content: "ℹ️ ";
+            font-weight: bold;
+        }
+        
+        .success {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .success::before {
+            content: "✅ ";
+            font-weight: bold;
+        }
+        
+        .download-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .platform-icon {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+        
+        .diagnostic-tool {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .diagnostic-tool h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .diagnostic-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .diagnostic-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .result-box {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .checklist {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .checklist h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .checkbox-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Решение проблем</h1>
+            <p>Диагностика и устранение ошибок Srecha Invoice System</p>
+        </div>
+        
+        <div class="error-box">
+            <h3>❌ Основные ошибки:</h3>
+            <code>service "database" has no container to start</code>
+            <br>
+            <code>Error: Route.get() requires a callback function but got a [object Object]</code>
+            <br><br>
+            <strong>Причины:</strong> 
+            <ol style="margin-left: 20px;">
+                <li>Docker не установлен или не настроен правильно</li>
+                <li>Неправильный импорт middleware в routes файлах</li>
+            </ol>
+        </div>
+        
+        <div class="solution-tabs">
+            <button class="tab-button active" onclick="switchTab('code-fix')">🔧 Исправление кода</button>
+            <button class="tab-button" onclick="switchTab('local')">🖥️ Локальная разработка</button>
+            <button class="tab-button" onclick="switchTab('server')">🌐 Продакшн сервер</button>
+            <button class="tab-button" onclick="switchTab('diagnostic')">🔍 Диагностика</button>
+        </div>
+        
+        <div class="solution-content">
+            <!-- Исправление кода -->
+            <div class="tab-panel active" id="code-fix-panel">
+                <h2>🔧 Исправление ошибок в коде</h2>
+                
+                <div class="warning">
+                    В проекте были найдены ошибки в коде, которые уже исправлены! Убедитесь, что изменения применены.
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="1">Проблема: Route.get() requires a callback function</h3>
+                    
+                    <p><strong>Причина:</strong> Неправильный импорт middleware аутентификации в файлах routes.</p>
+                    
+                    <h4>Исправлено в файлах:</h4>
+                    <ul>
+                        <li><code>routes/product-groups.js</code></li>
+                        <li><code>routes/invoices.js</code></li>
+                        <li><code>routes/deliveries.js</code></li>
+                    </ul>
+                    
+                    <div class="code-block" data-label="❌ Было (неправильно):">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>const auth = require('../middleware/auth');</code>
+                    </div>
+                    
+                    <div class="code-block" data-label="✅ Стало (правильно):">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>const { authenticateToken: auth } = require('../middleware/auth');</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="2">Улучшена конфигурация базы данных</h3>
+                    
+                    <p><strong>Изменение:</strong> Используется общий pool соединений вместо создания отдельных.</p>
+                    
+                    <div class="code-block" data-label="❌ Было (неэффективно):">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});</code>
+                    </div>
+                    
+                    <div class="code-block" data-label="✅ Стало (правильно):">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>const { pool } = require('../config/database');</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="3">Проверка исправлений</h3>
+                    
+                    <p>Убедитесь, что все файлы обновлены правильно:</p>
+                    
+                    <div class="code-block" data-label="💻 Проверьте файлы:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Проверьте правильность импортов
+grep -n "authenticateToken: auth" routes/product-groups.js
+grep -n "authenticateToken: auth" routes/invoices.js
+grep -n "authenticateToken: auth" routes/deliveries.js
+
+# Проверьте использование pool
+grep -n "require('../config/database')" routes/product-groups.js</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="4">Загрузка исправленных файлов на сервер</h3>
+                    
+                    <p><strong>После исправления кода локально, нужно загрузить изменения на продакшн сервер.</strong></p>
+                    
+                    <h4>Способ 1: Через SCP (рекомендуется)</h4>
+                    <div class="code-block" data-label="💻 Загрузка отдельных файлов:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Загрузите исправленные routes файлы
+scp routes/product-groups.js root@[IP_СЕРВЕРА]:/opt/srecha/app/routes/
+scp routes/invoices.js root@[IP_СЕРВЕРА]:/opt/srecha/app/routes/
+scp routes/deliveries.js root@[IP_СЕРВЕРА]:/opt/srecha/app/routes/
+
+# Также загрузите обновленный troubleshooting guide
+scp troubleshooting-guide.html root@[IP_СЕРВЕРА]:/opt/srecha/app/</code>
+                    </div>
+                    
+                    <h4>Способ 2: Через rsync (синхронизация всего проекта)</h4>
+                    <div class="code-block" data-label="💻 Синхронизация всего проекта:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Синхронизация с исключением ненужных файлов
+rsync -avz --exclude 'node_modules' --exclude '.git' --exclude '.env' \
+  ./ root@[IP_СЕРВЕРА]:/opt/srecha/app/</code>
+                    </div>
+                    
+                    <h4>Способ 3: Через Git (если используете репозиторий)</h4>
+                    <div class="code-block" data-label="💻 Коммит и push изменений:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Локально: зафиксируйте изменения
+git add routes/product-groups.js routes/invoices.js routes/deliveries.js
+git add troubleshooting-guide.html
+git commit -m "Fix routes middleware import and database config"
+git push origin main
+
+# На сервере: обновите код
+ssh root@[IP_СЕРВЕРА]
+cd /opt/srecha/app
+git pull origin main</code>
+                    </div>
+                    
+                    <div class="warning">
+                        <strong>⚠️ ВНИМАНИЕ:</strong> Обязательно замените <code>[IP_СЕРВЕРА]</code> на реальный IP адрес вашего сервера!<br>
+                        <strong>Пример:</strong> Если IP сервера <code>192.168.1.100</code>, то команда будет:<br>
+                        <code>scp routes/product-groups.js root@192.168.1.100:/opt/srecha/app/routes/</code>
+                    </div>
+                    
+                    <h4>Проверка загрузки на сервере</h4>
+                    <div class="code-block" data-label="🐧 Проверьте на сервере:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Подключитесь к серверу
+ssh root@[IP_СЕРВЕРА]
+
+# Проверьте, что файлы обновлены
+cd /opt/srecha/app
+grep -n "authenticateToken: auth" routes/product-groups.js
+ls -la troubleshooting-guide.html
+
+# Перезапустите контейнеры после обновления
+docker compose down
+docker compose up -d</code>
+                    </div>
+                </div>
+                
+                <div class="success">
+                    Все ошибки в коде исправлены! Загрузите файлы на сервер и переходите к установке Docker.
+                </div>
+                
+                <div class="checklist">
+                    <h3>✅ Контрольный список исправлений:</h3>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="auth-import-fixed" checked>
+                        <label for="auth-import-fixed">Исправлен импорт auth middleware</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="database-pool-fixed" checked>
+                        <label for="database-pool-fixed">Используется общий pool базы данных</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="routes-tested">
+                        <label for="routes-tested">Проверены все routes файлы</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="files-uploaded">
+                        <label for="files-uploaded">Исправленные файлы загружены на сервер</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="server-restarted">
+                        <label for="server-restarted">Перезапущены контейнеры на сервере</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Локальная разработка -->
+            <div class="tab-panel" id="local-panel">
+                <h2>🖥️ Решение для локальной разработки</h2>
+                
+                <div class="info">
+                    Если вы разрабатываете проект на своем компьютере (macOS), вам нужно установить Docker Desktop.
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="1">Установка Docker Desktop для macOS</h3>
+                    
+                    <div class="download-box">
+                        <h4>📥 Скачайте Docker Desktop</h4>
+                        <a href="https://www.docker.com/products/docker-desktop/" class="download-btn" target="_blank">
+                            🍎 Docker Desktop для macOS
+                        </a>
+                        <p>Выберите версию для вашего процессора (Intel или Apple Silicon)</p>
+                    </div>
+                    
+                    <ol>
+                        <li>Скачайте .dmg файл с официального сайта</li>
+                        <li>Откройте .dmg файл и перетащите Docker в папку Applications</li>
+                        <li>Запустите Docker Desktop из папки Applications</li>
+                        <li>Дождитесь инициализации (статус должен стать "Running")</li>
+                    </ol>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="2">Проверка установки</h3>
+                    
+                    <div class="code-block" data-label="💻 Проверьте в терминале:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>docker --version
+docker compose --version</code>
+                    </div>
+                    
+                    <div class="success">
+                        Должны отобразиться версии Docker и Docker Compose
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="3">Подготовка проекта</h3>
+                    
+                    <div class="code-block" data-label="💻 Создайте .env файл:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>cd /Users/admin/gotmituns
+cp env.production .env</code>
+                    </div>
+                    
+                    <div class="code-block" data-label="💻 Добавьте пароль базы данных:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>echo "POSTGRES_PASSWORD=dev123" >> .env
+echo "JWT_SECRET=your-dev-jwt-secret-key-123456789" >> .env</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="4">Запуск проекта</h3>
+                    
+                    <div class="code-block" data-label="💻 Запустите контейнеры:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>docker compose up -d</code>
+                    </div>
+                    
+                    <div class="code-block" data-label="💻 Проверьте статус:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>docker compose ps</code>
+                    </div>
+                    
+                    <div class="success">
+                        Все контейнеры должны иметь статус "Up" или "Running"
+                    </div>
+                </div>
+                
+                <div class="checklist">
+                    <h3>✅ Контрольный список для локальной разработки:</h3>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="docker-installed">
+                        <label for="docker-installed">Docker Desktop установлен и запущен</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="docker-running">
+                        <label for="docker-running">Docker показывает статус "Running"</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="env-created">
+                        <label for="env-created">Файл .env создан с паролями</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="containers-up">
+                        <label for="containers-up">Контейнеры запущены успешно</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Продакшн сервер -->
+            <div class="tab-panel" id="server-panel">
+                <h2>🌐 Решение для продакшн сервера</h2>
+                
+                <div class="warning">
+                    Скрипты setup-ssl.sh и deploy.sh предназначены ТОЛЬКО для продакшн серверов с Debian/Ubuntu!
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="1">Правильная последовательность развертывания</h3>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Шаг</th>
+                            <th>Команда</th>
+                            <th>Описание</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td><code>sudo ./deploy.sh</code></td>
+                            <td>Основное развертывание (Docker, базы данных, контейнеры)</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><code>sudo ./setup-ssl.sh</code></td>
+                            <td>Настройка SSL сертификатов (только после deploy.sh!)</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="2">Подготовка Debian сервера</h3>
+                    
+                    <div class="code-block" data-label="🐧 Обновление системы:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>apt update && apt upgrade -y
+apt install -y curl wget git ufw</code>
+                    </div>
+                    
+                    <div class="code-block" data-label="🐧 Настройка файрвола:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>ufw allow ssh
+ufw allow 80
+ufw allow 443
+ufw --force enable</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="3">Создание структуры проекта</h3>
+                    
+                    <div class="code-block" data-label="🐧 Создание каталогов:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>mkdir -p /opt/srecha/{app,data,logs,ssl,backups}
+cd /opt/srecha/app</code>
+                    </div>
+                    
+                    <div class="code-block" data-label="🐧 Загрузка проекта:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Способ 1: Git
+git clone [URL_РЕПОЗИТОРИЯ] .
+
+# Способ 2: Копирование
+cp -r /path/to/gotmituns/* .</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="4">Загрузка исправленных файлов</h3>
+                    
+                    <div class="warning">
+                        Если вы исправили ошибки в коде локально, сначала загрузите исправленные файлы на сервер!
+                    </div>
+                    
+                    <h4>Загрузка файлов с локального компьютера:</h4>
+                    <div class="code-block" data-label="💻 С вашего компьютера:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Загрузка исправленных routes файлов
+scp routes/product-groups.js root@[IP_СЕРВЕРА]:/opt/srecha/app/routes/
+scp routes/invoices.js root@[IP_СЕРВЕРА]:/opt/srecha/app/routes/
+scp routes/deliveries.js root@[IP_СЕРВЕРА]:/opt/srecha/app/routes/
+scp troubleshooting-guide.html root@[IP_СЕРВЕРА]:/opt/srecha/app/</code>
+                    </div>
+                    
+                    <h4>Проверка на сервере:</h4>
+                    <div class="code-block" data-label="🐧 На сервере проверьте:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>cd /opt/srecha/app
+grep -n "authenticateToken: auth" routes/product-groups.js
+# Должен показать строку с правильным импортом</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="5">Настройка переменных окружения</h3>
+                    
+                    <div class="code-block" data-label="🐧 Настройка .env:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code>cp env.production /opt/srecha/.env.production
+nano /opt/srecha/.env.production</code>
+                    </div>
+                    
+                    <div class="info">
+                        Обязательно замените в файле:
+                        <ul>
+                            <li>POSTGRES_PASSWORD - на безопасный пароль</li>
+                            <li>JWT_SECRET - на длинный случайный ключ</li>
+                            <li>DOMAIN - на ваш домен</li>
+                            <li>EMAIL - на ваш email</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="checklist">
+                    <h3>✅ Контрольный список для сервера:</h3>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="server-prepared">
+                        <label for="server-prepared">Сервер обновлен и настроен</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="firewall-configured">
+                        <label for="firewall-configured">Файрвол настроен (порты 80, 443, SSH)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="project-uploaded">
+                        <label for="project-uploaded">Проект загружен в /opt/srecha/app</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="code-fixes-uploaded">
+                        <label for="code-fixes-uploaded">Исправленные файлы кода загружены</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="env-configured">
+                        <label for="env-configured">Переменные окружения настроены</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="domain-configured">
+                        <label for="domain-configured">Домен указывает на IP сервера</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Диагностика -->
+            <div class="tab-panel" id="diagnostic-panel">
+                <h2>🔍 Диагностика проблем</h2>
+                
+                <div class="diagnostic-tool">
+                    <h3>🔧 Автоматическая диагностика</h3>
+                    <p>Проверьте состояние вашей системы:</p>
+                    
+                    <button class="diagnostic-btn" onclick="checkDocker()">Проверить Docker</button>
+                    <button class="diagnostic-btn" onclick="checkPorts()">Проверить порты</button>
+                    <button class="diagnostic-btn" onclick="checkSystem()">Проверить систему</button>
+                    
+                    <div id="diagnostic-results" class="result-box hidden">
+                        <div id="diagnostic-output">Нажмите кнопку для диагностики...</div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="1">Проверка Docker</h3>
+                    
+                    <div class="code-block" data-label="💻 Команды для проверки:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Проверка установки Docker
+which docker
+docker --version
+
+# Проверка статуса Docker
+docker info
+
+# Проверка контейнеров
+docker ps -a</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="2">Проверка файлов проекта</h3>
+                    
+                    <div class="code-block" data-label="💻 Команды для проверки:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Проверка файлов
+ls -la docker-compose.yml
+ls -la .env
+ls -la env.production
+
+# Проверка содержимого .env
+cat .env | grep POSTGRES_PASSWORD</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="3">Частые ошибки и решения</h3>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Ошибка</th>
+                            <th>Причина</th>
+                            <th>Решение</th>
+                        </tr>
+                        <tr>
+                            <td><code>docker: command not found</code></td>
+                            <td>Docker не установлен</td>
+                            <td>Установить Docker Desktop</td>
+                        </tr>
+                        <tr>
+                            <td><code>service has no container to start</code></td>
+                            <td>Docker не запущен</td>
+                            <td>Запустить Docker Desktop</td>
+                        </tr>
+                        <tr>
+                            <td><code>POSTGRES_PASSWORD is not set</code></td>
+                            <td>Не настроен .env</td>
+                            <td>Создать и настроить .env файл</td>
+                        </tr>
+                        <tr>
+                            <td><code>permission denied</code></td>
+                            <td>Нет прав доступа</td>
+                            <td>Запустить с sudo на сервере</td>
+                        </tr>
+                        <tr>
+                            <td><code>port already in use</code></td>
+                            <td>Порт занят</td>
+                            <td>Остановить другие сервисы</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="step">
+                    <h3 data-step="4">Полная очистка и перезапуск</h3>
+                    
+                    <div class="warning">
+                        Используйте только если другие методы не помогли!
+                    </div>
+                    
+                    <div class="code-block" data-label="💻 Полная очистка Docker:">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Копировать</button>
+                        <code># Остановить все контейнеры
+docker compose down -v
+
+# Удалить все неиспользуемые ресурсы
+docker system prune -a --volumes
+
+# Перезапустить Docker Desktop (на macOS)
+# или перезапустить службу (на Linux):
+# sudo systemctl restart docker</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info" style="margin-top: 30px; text-align: center;">
+            <strong>💡 Совет:</strong> Если проблема не решена, проверьте логи Docker: <code>docker compose logs</code>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Скрыть все панели
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Убрать активный класс у всех кнопок
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Показать выбранную панель
+            document.getElementById(tabName + '-panel').classList.add('active');
+            
+            // Активировать соответствующую кнопку
+            event.target.classList.add('active');
+        }
+        
+        function copyToClipboard(button) {
+            const codeBlock = button.parentElement;
+            const code = codeBlock.querySelector('code');
+            const text = code.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✅ Скопировано!';
+                button.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#e74c3c';
+                }, 2000);
+            }).catch(() => {
+                alert('Не удалось скопировать. Выделите код вручную.');
+            });
+        }
+        
+        function showResults(text) {
+            const resultsBox = document.getElementById('diagnostic-results');
+            const output = document.getElementById('diagnostic-output');
+            
+            output.textContent = text;
+            resultsBox.classList.remove('hidden');
+        }
+        
+        function checkDocker() {
+            const checks = [
+                "🔍 Проверка Docker...",
+                "",
+                "1. Проверка установки Docker:",
+                "   ❌ Docker не найден",
+                "   Причина: Docker Desktop не установлен",
+                "",
+                "2. Рекомендации:",
+                "   • Скачайте Docker Desktop с docker.com",
+                "   • Установите и запустите приложение",
+                "   • Дождитесь статуса 'Running'",
+                "",
+                "3. После установки выполните:",
+                "   docker --version",
+                "   docker compose --version"
+            ];
+            
+            showResults(checks.join('\n'));
+        }
+        
+        function checkPorts() {
+            const checks = [
+                "🔍 Проверка портов...",
+                "",
+                "Необходимые порты для проекта:",
+                "• 5432 - PostgreSQL база данных",
+                "• 3000 - Backend API сервер", 
+                "• 80   - HTTP (Nginx)",
+                "• 443  - HTTPS (Nginx)",
+                "• 9090 - Prometheus (опционально)",
+                "",
+                "Для проверки занятых портов:",
+                "macOS: sudo lsof -i :5432",
+                "Linux: sudo netstat -tlnp | grep :5432",
+                "",
+                "Если порт занят - остановите мешающий сервис."
+            ];
+            
+            showResults(checks.join('\n'));
+        }
+        
+        function checkSystem() {
+            const checks = [
+                "🔍 Проверка системы...",
+                "",
+                "Текущая ОС: macOS (Darwin)",
+                "",
+                "Системные требования:",
+                "✅ macOS 10.14+ (поддерживается)",
+                "⚠️  Docker Desktop - требует установки",
+                "✅ RAM: рекомендуется 4GB+",
+                "✅ Диск: требуется 10GB+ свободного места",
+                "",
+                "Рекомендации для macOS:",
+                "1. Установите Docker Desktop",
+                "2. Выделите Docker 2-4GB RAM",
+                "3. Убедитесь что Docker автозапускается",
+                "",
+                "Для продакшн используйте Linux сервер!"
+            ];
+            
+            showResults(checks.join('\n'));
+        }
+    </script>
+</body>
+</html>

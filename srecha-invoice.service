@@ -1,0 +1,37 @@
+[Unit]
+Description=Srecha Invoice System - Node.js Backend
+Documentation=https://github.com/srecha/invoice-system
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=srecha
+Group=srecha
+WorkingDirectory=/opt/srecha/app
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/srecha/app/.env
+ExecStart=/usr/bin/node server.js
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=always
+RestartSec=10
+KillMode=mixed
+TimeoutStopSec=30
+SyslogIdentifier=srecha-invoice
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/srecha/uploads /opt/srecha/logs
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target

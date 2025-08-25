@@ -1,13 +1,10 @@
 const express = require('express');
-const { Pool } = require('pg');
 const { body, validationResult, param } = require('express-validator');
-const auth = require('../middleware/auth');
+const { authenticateToken: auth } = require('../middleware/auth');
 const { logActivity } = require('../utils/logger');
+const { pool } = require('../config/database');
 
 const router = express.Router();
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
-});
 
 // Get all product groups
 router.get('/', auth, async (req, res) => {

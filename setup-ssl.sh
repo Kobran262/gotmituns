@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Скрипт для настройки SSL сертификатов Let's Encrypt
-# Запускать после основного развертывания
+# Запускать после основного развертывания (БЕЗ Docker)
 
 set -e
 
@@ -45,13 +45,12 @@ fi
 log "Настройка SSL сертификата для домена: $DOMAIN"
 
 # Обновление конфигурации
-sed -i "s/DOMAIN=.*/DOMAIN=$DOMAIN/" /opt/srecha/.env.production
-sed -i "s/EMAIL=.*/EMAIL=$EMAIL/" /opt/srecha/.env.production
-sed -i "s|FRONTEND_URL=.*|FRONTEND_URL=https://$DOMAIN|" /opt/srecha/.env.production
+sed -i "s/DOMAIN=.*/DOMAIN=$DOMAIN/" /opt/srecha/app/.env
+sed -i "s/EMAIL=.*/EMAIL=$EMAIL/" /opt/srecha/app/.env
+sed -i "s|FRONTEND_URL=.*|FRONTEND_URL=https://$DOMAIN|" /opt/srecha/app/.env
 
 # Остановка nginx для получения сертификата
-cd /opt/srecha/app
-docker-compose -f docker-compose.production.yml stop nginx
+systemctl stop nginx
 
 # Получение сертификата
 log "Получение SSL сертификата от Let's Encrypt..."
@@ -73,17 +72,16 @@ chmod 600 /opt/srecha/ssl/privkey.pem
 chmod 644 /opt/srecha/ssl/fullchain.pem
 
 # Запуск nginx
-docker-compose -f docker-compose.production.yml start nginx
+systemctl start nginx
 
 # Настройка автообновления сертификата
 cat > /opt/srecha/renew-ssl.sh << 'EOF'
 #!/bin/bash
 
-DOMAIN=$(grep "DOMAIN=" /opt/srecha/.env.production | cut -d'=' -f2)
+DOMAIN=$(grep "DOMAIN=" /opt/srecha/app/.env | cut -d'=' -f2)
 
 # Остановка nginx
-cd /opt/srecha/app
-docker-compose -f docker-compose.production.yml stop nginx
+systemctl stop nginx
 
 # Обновление сертификата
 certbot renew --quiet
@@ -98,7 +96,7 @@ if [[ -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]]; then
 fi
 
 # Запуск nginx
-docker-compose -f docker-compose.production.yml start nginx
+systemctl start nginx
 EOF
 
 chmod +x /opt/srecha/renew-ssl.sh

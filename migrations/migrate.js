@@ -4,7 +4,12 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 5432,
+  database: process.env.DB_NAME || process.env.POSTGRES_DB || 'srecha_invoice',
+  user: process.env.DB_USER || process.env.POSTGRES_USER || 'srecha',
+  password: process.env.DB_PASSWORD || process.env.POSTGRES_PASSWORD,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 async function runMigrations() {
